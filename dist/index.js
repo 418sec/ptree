@@ -146,6 +146,9 @@ class PTree {
     set(key, value) {
         const segments = getSegments(key);
         let obj = this.root;
+        if(segments.includes('__proto__') || segments.includes('constructor') || segments.includes('prototype')){
+            return undefined;
+        }
         for (let i = 0; i < segments.length; i++) {
             const current = obj;
             const seg = segments[i];
