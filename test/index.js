@@ -1,4 +1,5 @@
 let $p = require("../dist/").default;
+const assert = require("assert")
 
 function compare(actual, expected) {
   console.log(
@@ -607,3 +608,15 @@ const obj25 = {
 compare($p.from(obj25).wildcard("a.*").length, 2);
 compare($p.from(obj25).wildcard("b.**").length, 4);
 compare($p.from(obj25).wildcard("d.*").length, 0);
+
+function isProtoPathPolluted() {
+  const t = new $p({});
+  t.set('__proto__.polluted', true)
+}
+
+function testProtoPathPollution() {
+  assert.throws(isProtoPathPolluted, "Test failed for Proto Path.")
+  console.log("Test passed.")
+}
+
+testProtoPathPollution();
