@@ -176,6 +176,11 @@ export default class PTree {
 
     // Iterative deep object descent & set
     let obj = this.root;
+    
+    // Prototype pollution mitigation
+    if(segments.includes('__proto__') || segments.includes('constructor') || segments.includes('prototype')){
+      return undefined;
+    }
 
     for (let i = 0; i < segments.length; i++) {
       const current = obj;
