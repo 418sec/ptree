@@ -2,6 +2,18 @@ const pm = require("picomatch");
 
 export type Key = string | number | (() => string | number);
 
+const ILLEGAL_KEYS = new Set(["prototype", "constructor", "__proto__"]);
+
+function isIllegalKey(key: string): Boolean {
+  return ILLEGAL_KEYS.has(key);
+}
+
+function disallowProtopath(key: string | number): void {
+  if (typeof key === "string" && isIllegalKey(key)) {
+    throw new Error("Unsafe key encountered: " + key)
+  }
+}
+
 function getSegments(path: Key | Key[]): (string | number)[] {
   let segments = [];
   if (typeof path === "string") {
@@ -180,6 +192,7 @@ export default class PTree {
     for (let i = 0; i < segments.length; i++) {
       const current = obj;
       const seg = segments[i];
+      disallowProtopath(seg);
 
       if (i < segments.length - 1) {
         obj = (<any>obj)[seg];
